@@ -92,19 +92,99 @@ const data = [
 
 // Question 1: Extract to an array a list of all the people's names from the data.
 
+const names = data.map(person => person.name);
+console.log(names);
+
 // Question 2: Extract to an array all the job positions for all the people.
+
+const peoplePositions = data.map(person => {
+  const positions = person.jobs.map(job  => job.position)
+  return {
+    name : person.name,
+    "positions" : positions };
+})
+
+console.log(peoplePositions);
 
 // Question 3: Find the average age of the people.
 
+const avgAge = () => {
+  let ageSum = 0;
+  data.forEach((person) => ageSum+= person.age);
+  return ageSum/data.length;
+}
+
+console.log(avgAge());
+
 // Question 4: Return an array with the unique cities where the people live.
+
+// this is not distinct 
+const cities = data.map(person => person.address.city);
+console.log(cities);
+
 
 // Question 5: Extract to an array a list of all the people's hobbies in alphabetical order.
 
+let hoppies = [];
+data.forEach(person => hoppies.push(...person.hobbies));
+hoppies = hoppies.sort();
+console.log(hoppies);
+
+
 // Question 6: Get the total number of years of experience for all the people in the data.
+
+function getDateDifferenceInYears(date1, date2) {
+  // Create date objects from the strings
+  let d1 = new Date(date1);
+  let d2 = new Date(date2);
+
+  // Get the difference in milliseconds
+  let diff = d2.getTime() - d1.getTime();
+
+  // Convert milliseconds to years
+  let diffInYears = diff / (1000 * 60 * 60 * 24 * 365.25);
+
+  return diffInYears;
+}
+
+
+const peopleAvgExperiance = data.map(person => {
+  let experiance = 0;
+  person.jobs.forEach(job => {
+    if(job.endDate){
+      experiance += getDateDifferenceInYears(job.startDate , job.endDate);
+    }
+    else {
+      experiance += getDateDifferenceInYears(job.startDate , new Date());
+    }
+  })
+  experiance = experiance.toFixed(2);
+  return {
+    name : person.name,
+    experiance : experiance
+  }
+});
+
+console.log(peopleAvgExperiance);
 
 // Question 7: Extract to an array all the names of the people who live in California and have a job as a "Senior QA Engineer" and have "cooking" as a hobby, and sort them alphabetically.
 
+const seniorQaEngineersInCaliforniaWhoLovesCooking = data.filter(person => {
+  if(person.address.state === "CA")
+  {
+    if(person.jobs.filter(job => job.position === "Senior QA Engineer").length > 0){
+      if(person.hobbies.filter(hobby => hobby === "cooking").length > 0){
+        return true;
+      }
+    }
+  }
+  return false;
+}).sort();
+
+console.log("seniorQaEngineersInCaliforniaWhoLovesCooking" , seniorQaEngineersInCaliforniaWhoLovesCooking);
 // Question 8: Extract to an array all the responsibilities of the people who live in Chicago and are currently employed as "Senior Data Analysts".
+
+//const responsibilitiesChicagoSeniorDataAnalysts = data.filter(person => person.address.city === "Chicago" && person.jobs.filter(job => job.position === "Senior Data Analysts").length > 0).map(person => ...person.responsibilities);
 
 // Question 9: Extract to an array of objects with the names of all the people who have "hiking" as a hobby and a field "job_experience" which is the sum of the number of months they have worked in each job.
 
